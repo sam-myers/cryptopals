@@ -1,4 +1,56 @@
-pub fn xor(bytes: &Vec<u8>, key: &Vec<u8>) -> Vec<u8> {
+use serialize::base64::{self, ToBase64};
+use std::fmt;
+use std::u8;
+
+use crate::english_text::*;
+
+pub enum XorSearchResult {
+    Found(String, XorKey),
+    NotFound,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct XorKey {
+    pub key: Vec<u8>,
+}
+
+pub struct XorSearch {
+    cypher_text: Vec<u8>,
+}
+
+impl XorSearch {
+    pub fn new(cypher_text: Vec<u8>) -> XorSearch {
+        XorSearch { cypher_text }
+    }
+
+    pub fn search_single_bit(&self) -> XorSearchResult {
+        for k in 0..u8::MAX {
+            let key = XorKey { key: vec![k] };
+            let text = xor(&self.cypher_text, &key.key);
+
+            match bytes_to_english(&text) {
+                EnglishText::Likely(s) => return XorSearchResult::Found(s, key),
+                _ => (),
+            }
+        }
+
+        XorSearchResult::NotFound
+    }
+}
+
+impl XorKey {
+    fn to_base64(&self) -> String {
+        self.key.to_base64(base64::STANDARD)
+    }
+}
+
+impl fmt::Display for XorKey {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "XorKey<{}>", self.to_base64())
+    }
+}
+
+pub fn xor(bytes: &[u8], key: &[u8]) -> Vec<u8> {
     let mut result = Vec::new();
 
     for i in 0..bytes.len() {

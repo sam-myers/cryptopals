@@ -6,21 +6,21 @@ mod english_text;
 mod set_1;
 mod xor;
 
-use crate::english_text::{bytes_to_english, EnglishText};
-use std::u8;
+use std::io;
 
-fn main() {
-    let cipher_text = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
-        .from_hex()
-        .unwrap();
+use std::fs::File;
+use std::io::prelude::*;
 
-    for k in 0..u8::MAX {
-        let key = vec![k];
-        let text = xor::xor(&cipher_text, &key);
+fn main() {}
 
-        match bytes_to_english(&text) {
-            EnglishText::Likely(s) => println!("key:{} \"{}\"", k as char, s),
-            _ => (),
-        }
-    }
+fn ciphers_from_file(path: &str) -> io::Result<Vec<Vec<u8>>> {
+    let mut file = File::open(path)?;
+
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+
+    Ok(contents
+        .split('\n')
+        .map(|x| x.from_hex().unwrap())
+        .collect())
 }

@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::english_text::*;
+    use crate::ciphers_from_file;
     use crate::xor::*;
 
     use serialize::base64::{self, ToBase64};
@@ -32,12 +32,36 @@ mod tests {
         let cipher_text = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
             .from_hex()
             .unwrap();
-        let key = vec!['X' as u8];
-        let text = xor(&cipher_text, &key);
-
-        assert_eq!(
-            bytes_to_english(&text),
-            EnglishText::Likely("Cooking MC's like a pound of bacon".to_string())
-        );
+        let search = XorSearch::new(cipher_text);
+        match search.search_single_bit() {
+            XorSearchResult::Found(s, k) => {
+                assert_eq!(s, "Cooking MC's like a pound of bacon".to_string());
+                assert_eq!(k.key, vec!['X' as u8]);
+            }
+            XorSearchResult::NotFound => assert!(false),
+        }
     }
+
+    #[test]
+    fn test_challenge4() {
+        for cipher in ciphers_from_file("resources/set1_challenge4.txt").unwrap() {
+            match XorSearch::new(cipher).search_single_bit() {
+                XorSearchResult::Found(s, k) => {
+                    assert_eq!(s, "Now that the party is jumping\n".to_string());
+                    assert_eq!(k.key, vec!['5' as u8]);
+                }
+                _ => {}
+            }
+        }
+    }
+
+//    #[test]
+//    fn test_challenge5() {
+//        let clear_text = "Burning 'em, if you ain't quick and nimble
+//I go crazy when I hear a cymbal";
+//        let cipher_text = xor(clear_text.as_bytes(), &"ICE".as_bytes());
+//
+//        assert_eq!(cipher_text.to_base64(base64::STANDARD),
+//                   "CzY3JyorLmNiLC5paSojaToqPGMkIC1iPWM0PComImMkJydlJyooKy8gQwplLixlKjEkMzplPisgJ2MMaSsgKDFlKGMmMC4nKC8=".to_string())
+//    }
 }
