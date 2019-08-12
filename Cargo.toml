@@ -5,4 +5,5 @@ authors = ["Sam Myers <sam@sammye.rs>"]
 edition = "2018"
 
 [dependencies]
+hex = "0.3.2"
 rustc-serialize = "0.3.24"

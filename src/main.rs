@@ -1,3 +1,4 @@
+extern crate hex;
 extern crate rustc_serialize as serialize;
 
 use serialize::hex::FromHex;
