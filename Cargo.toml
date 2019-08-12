@@ -1,0 +1,8 @@
+[package]
+name = "cryptopals"
+version = "0.1.0"
+authors = ["Sam Myers <sam@sammye.rs>"]
+edition = "2018"
+
+[dependencies]
+rustc-serialize = "0.3.24"
