@@ -60,3 +60,27 @@ pub fn xor(bytes: &[u8], key: &[u8]) -> Vec<u8> {
 
     result
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_xor_single_byte_key() {
+        assert_eq!(
+            xor(&[0b00000000, 0b00000001, 0b11111111], &[0b00000111]),
+            &[0b00000111, 0b00000110, 0b11111000]
+        );
+    }
+
+    #[test]
+    fn test_xor_multi_byte_key() {
+        assert_eq!(
+            xor(
+                &[0b00000000, 0b00000001, 0b11111111],
+                &[0b00000111, 0b11100000]
+            ),
+            &[0b00000111, 0b11100001, 0b11111000]
+        );
+    }
+}
