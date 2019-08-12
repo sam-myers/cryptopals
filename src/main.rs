@@ -1,9 +1,11 @@
+extern crate hamming;
 extern crate hex;
 extern crate rustc_serialize as serialize;
 
 use serialize::hex::FromHex;
 
 mod english_text;
+mod hamming_distance;
 mod set_1;
 mod xor;
 
