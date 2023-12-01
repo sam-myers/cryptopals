@@ -7,4 +7,4 @@ edition = "2018"
 [dependencies]
 hamming = "0.1"
 hex = "0.4.3"
-rustc-serialize = "0.3.24"
+rustc-serialize = "0.3.25"
